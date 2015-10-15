@@ -1,0 +1,43 @@
+<%#
+Trafficanalyzer addon for Luci
+Copyright 2015 Sebastian Fach <info at sebastian minus fach dot de>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+
+-%>
+<%-
+local NXFS = require "nixio.fs"
+local HTTP = require "luci.http"
+local UCI  = require "luci.model.uci"
+
+function show_log()
+	local uci     = UCI.cursor()
+	local logdir  = uci:get("privoxy", "privoxy", "logdir") or "/var/log"
+	local logfile = uci:get("privoxy", "privoxy", "logfile") or "privoxy"
+	uci:unload("privoxy")
+
+	local lfile=logdir .. "/" .. logfile
+	local ldata=NXFS.readfile(lfile)
+	if not ldata or #ldata == 0 then
+		ldata="No data available."
+	end
+   HTTP.write(ldata)
+end
+%>
+
+<%+header%>
+<h2><a id="content" name="content"><%:Traffic Analyzer - Request Log%></a></h2>
+<div id="content_trafficanalyzer_requestlog">
+<%
+-- Set a readable style taken from openwrt theme for textarea#syslog
+-- in openwrt theme there are problems with a width of 100 so we check for theme and set to lower value
+%>
+<textarea readonly="readonly" wrap="off" id="trafficananlyzer_requestlog" style="width: <%if media == "/luci-static/openwrt.org" then%>98.7%<%else%>100%<%end%> ; min-height: 500px; font-family: monospace; resize: none;"><%=show_log()%></textarea>
+</div>
+<%+footer%>

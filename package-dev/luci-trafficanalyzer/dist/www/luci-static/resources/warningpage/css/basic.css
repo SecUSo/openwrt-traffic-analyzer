@@ -1,0 +1,15 @@
+* {
+	width: 100%;
+}
+
+body {
+	background-color: #333;
+	font-size: 90%;
+}
+
+@media only all and (max-width: 700px) {
+
+	body {
+		background-color: #fff;
+	}
+}

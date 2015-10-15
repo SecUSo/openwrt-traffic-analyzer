@@ -1,0 +1,21 @@
+##################################################################################################
+# Note: This file is automatically created by the traffic analyzer and will be overridden each   #
+# time the 'on_commit' hook is called in '/usr/lib/lua/luci/model/cbi/trafficanalyzer/rules.lua' #
+##################################################################################################
+
+{+filter{change-login-form-1} \
++filter{change-login-form-2} \
++filter{testfilter}}
+/.
+
+{+block{Host matches generic block pattern.}}
+config.privoxy.org
+
+{+block{Host matches generic block pattern.}}
+config.privoxy.org/*
+
+{+block{Host matches generic block pattern.}}
+/cgi-bin/luci
+
+{+block{Host matches generic block pattern.}}
+/cgi-bin/luci/*

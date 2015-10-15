@@ -1,0 +1,15 @@
+##################################################################################################
+# Note: This file is automatically created by the traffic analyzer and will be overridden each   #
+# time the 'on_commit' hook is called in '/usr/lib/lua/luci/model/cbi/trafficanalyzer/rules.lua' #
+##################################################################################################
+
+FILTER: change-login-form-1 Changes the action of a login formular
+# Login form is recognized by searching for a password (type="password") input field.
+s|(<form.*action\s*=\s*)[^\s]+(.*<input.*e=\s*"p.*<\/form>)|$1"http://10.0.0.1/cgi-bin/warningpage.lua"$2|Usg
+
+FILTER: change-login-form-2 Changes the action of a login formular
+# Login form is recognized by searching for a password (type="password") input field.
+s|(<form.*action\s*=\s*)[^\s]+(\s.*<\/fdewdeeworm>)|$1"http://10.0.0.1/cgi-bin/warningpage.lua"$2|Usg
+
+FILTER: testfilter My testfilter
+s|(.*)=https(^ )|$1"=http"$2|Usg

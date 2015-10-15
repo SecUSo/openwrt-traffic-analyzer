@@ -1,0 +1,64 @@
+<!--
+
+Please note: This file will not be used by the trafficanalyzer. It is only placed here because the HTML code is hard to read in the lua file.
+
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/basic.css">
+		<link rel="stylesheet" href="css/main.css">
+		<script type="text/javascript">
+			window.onload = function () {
+				var userLang = navigator.language || navigator.userLanguage;
+ 				if (userLang.indexOf("de") > -1) {
+ 					document.getElementById("english").style.display = 'none';
+ 				} else {
+ 					document.getElementById("german").style.display = 'none';
+ 				}
+			}
+ 		</script>
+	</head>
+	<body>
+		<div class="warningpage">
+			<div class="container logo_container">
+				<img src="img/tud_logo.svg" class="logo" />
+				<img src="img/secuso_logo.svg" class="logo" />
+			</div>
+			<div class="container content_container">
+				<div id="english">
+					<h1 class="warning">Warning</h1>
+					<p>
+						You have entered your password at the page &lt;webpage URL&gt;.
+					</p>
+					<p>
+						Data transfer has been redirected because this WiFi network is a cloned fake which is unencrypted and not secure. Additionally, the page where you entered your login credentials does not use encryption.
+					</p>
+					<p>
+						Please change the password for the website listed above. It is possible that sombody who uses this network has captured your credentials. Please use a secure connection for this procedure (HTTPS).
+					</p>
+					<p>
+						<a href="https://www.secuso.informatik.tu-darmstadt.de/en/secuso-home/" class="more_info">More information...</a>
+					</p>
+				</div>
+				<div id="german">
+					<h1 class="warning">Warnung</h1>
+					<p>
+						Sie haben auf der Webseite mit der URL &lt;URL der Webseite&gt; ihr Passwort eingegeben.
+					</p>
+					<p>
+						Der Aufruf wurde umgeleitet, da das Funknetzwerk ein nicht vertrauensw&uuml;rdiger Klon eines anderen Netzwerks ist. Dar&uuml;ber hinaus verwendet die Webseite, auf der Sie Ihre Login-Daten eingegeben haben, keine verschl&uuml;sselte Verbindung.
+					</p>
+					<p>
+						Bitte &auml;ndern Sie Ihr Passwort f&uuml;r die oben angegebene Webseite, da nicht auszuschlie&szlig;en ist, dass Ihre Zugangsdaten von einem anderen Nutzer dieses Netzwerks abgefangen wurden. Bitte benutzen Sie f&uuml;r die Passwort&auml;nderung eine sichere Verbindung (HTTPS).
+					</p>
+					<p>
+						<a href="https://www.secuso.informatik.tu-darmstadt.de/de/secuso-home/" class="more_info">Mehr Informationen...</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,48 @@
+
+config filter
+	option type 'FILTER'
+	option name 'change-login-form-1'
+	option description 'Changes the action of a login formular'
+	option pattern 's|(<form.*action\s*=\s*)[^\s]+(.*<input.*e=\s*"p.*<\/form>)|$1"http://10.0.0.1/cgi-bin/warningpage.lua"$2|Usg'
+	option comment 'Login form is recognized by searching for a password (type="password") input field.'
+	option enabled '1'
+
+config filter
+	option type 'FILTER'
+	option name 'change-login-form-2'
+	option description 'Changes the action of a login formular'
+	option pattern 's|(<form.*action\s*=\s*)[^\s]+(\s.*<\/fdewdeeworm>)|$1"http://10.0.0.1/cgi-bin/warningpage.lua"$2|Usg'
+	option comment 'Login form is recognized by searching for a password (type="password") input field.'
+	option enabled '1'
+
+config filter
+	option type 'FILTER'
+	option name 'testfilter'
+	option description 'My testfilter'
+	option pattern 's|(.*)=https(^ )|$1"=http"$2|Usg'
+	option enabled '1'
+
+config action
+	option type '+block'
+	option description 'Host matches generic block pattern.'
+	option pattern 'config.privoxy.org'
+	option enabled '1'
+
+config action
+	option type '+block'
+	option description 'Host matches generic block pattern.'
+	option pattern 'config.privoxy.org/*'
+	option enabled '1'
+
+config action
+	option type '+block'
+	option description 'Host matches generic block pattern.'
+	option pattern '/cgi-bin/luci'
+	option enabled '1'
+
+config action
+	option type '+block'
+	option description 'Host matches generic block pattern.'
+	option pattern '/cgi-bin/luci/*'
+	option enabled '1'
+

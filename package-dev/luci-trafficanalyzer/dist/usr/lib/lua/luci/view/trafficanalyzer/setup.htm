@@ -1,0 +1,95 @@
+<%#
+Trafficanalyzer addon for Luci
+Copyright 2015 Sebastian Fach <info at sebastian minus fach dot de>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+
+-%>
+<%
+local NXFS = require "nixio.fs"
+local HTTP = require "luci.http"
+local UCI  = require "luci.model.uci"
+local ntm = require "luci.model.network".init()
+local pagedir  = "/www/cgi-bin"
+local pagefile = "warningpage.lua"
+local pfile = pagedir .. "/" .. pagefile
+
+function show_page()
+	local pdata = NXFS.readfile(pfile)
+	if not pdata or #pdata == 0 then
+		pdata = "No warning page available."
+	end
+	return pdata
+end
+%>
+
+<%+header%>
+
+<form method="post" action="<%=pcdata(luci.http.getenv("REQUEST_URI"))%>">
+	<div class="cbi-map">
+		<h2><a id="content" name="content"><%:TrafficAnalyzer - Setup%></a></h2>
+
+		<fieldset class="cbi-section">
+			<legend><%:Basic setup%></legend>
+			<p>Please select the interface for which the trafficanalyzer will be set-up <br></p>
+			<p><b>Warning:</b> All http-traffic on the selected interface will be redirected over privoxy and privoxy will block LuCi. So you should use another Interface to access LuCi or use ssh for command line configuration. The setup does not redirect other 	ports or blocks forwarding to other interfaces. Please configure the firewall if you want to block all other traffic from or to the selected interface (http://wiki.openwrt.org/doc/uci/firewall).</p>
+			<ul style="margin:0; list-style-type:none">
+				<%
+				local ifaces = ntm:get_networks()
+				for _, net in ipairs(ntm:get_networks()) do
+				%>
+					<li style="padding: 0.5em 0;">
+						<input type="radio" id="<%=net:name()%>" class="cbi-input-radio" value="<%=net:name()%>" name="interface"/> &#160;
+						<label for="<%=net:name()%>">
+							<span class="ifacebadge"><%=net:name()%>
+								<img style="width:16px; height:16px; vertical-align:middle" src="/luci-static/resources/icons/ethernet.png" />
+							</span>
+						</label>
+					</li>
+				<%end%>
+			</ul>
+			<button type="submit" name="submit" value="setup" class="cbi-button cbi-button-apply"> <%:Run setup script%></button>
+			<button type="submit" name="submit" value="undosetup" class="cbi-button cbi-button-apply"><%:Undo setup%></button>
+			<% if luci.http.formvalue("submit") == "setup" then %>
+				<%local interfacename = luci.http.formvalue("interface") 
+					if interfacename == nil then%> 
+						<p style="margin-top:2em;font-size:1.5em"><b>Please select an Interface</b></p>
+					<%else%>
+					   <p style="margin-top:2em">Command line output:</p>
+					   <pre><%= luci.sys.exec("/etc/uci-defaults/trafficanalyzer_setup.sh install " .. interfacename) %></pre>
+			<%		end 
+			end %>
+			<% if luci.http.formvalue("submit") == "undosetup" then %>
+               <p style="margin-top:2em">Command line output:</p>
+               <pre><%= luci.sys.exec("/etc/uci-defaults/trafficanalyzer_setup.sh uninstall") %></pre>
+			<% end %>
+		</fieldset>
+		
+		<fieldset class="cbi-section">
+			<legend><%:Warning page%></legend>
+			<p>To edit the warning page, please use a SCP client of your chice (e.g. winscp for windows). You will find the warning page and all corresponding files in '/www/cgi-bin/'.</p>
+			<%
+			-- Set a readable style taken from openwrt theme for textarea#syslog
+			-- in openwrt theme there are problems with a width of 100 so we check for theme and set to lower value
+			%>
+			<div id="trafficananlyzer_warningpage" style="width: <%if media == "/luci-static/openwrt.org" then%>98.7%<%else%>100%<%end%>; border: 1px solid #ccc;">
+				<%
+				package.path = package.path .. ";/www/cgi-bin/warningpage_content.lua"
+				local warningpage_content = require("warningpage_content")
+				--Show HTML for the backend version of the warning page: backend = true
+				warningpage_content.stylesheets(true)
+				warningpage_content.body(true)
+				%>
+			</div>
+		</fieldset>
+	</div>
+</form>
+
+<%+footer%>
+
