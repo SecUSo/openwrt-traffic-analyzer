@@ -1,4 +1,4 @@
-# Wificloner
+# Trafficanalyzer 
 
 ## Description
 Trafficanalyzer is an OpenWrt addon which includes a LuCi configuration interface extension. It uses privoxy to display the user a warning if she enters her login credentials on a webpage which does not transmit them encrypted.
