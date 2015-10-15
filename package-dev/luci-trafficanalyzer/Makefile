@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=trafficanalyzer
-PKG_RELEASE:=0.1.0
+PKG_RELEASE:=0.1.1
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 

@@ -21,6 +21,7 @@ saved_ip_file=/etc/uci-defaults/trafficanalyzer_if_ip
 
 #if privoxy config file with new format is detected
 if [ -e $privoxy_config_file_new_fomat ]; then
+	echo "Recognized new privoxy config file (used in chaos calmer and above). This feature is still in beta!"
 	privoxy_config_file=$privoxy_config_file_new_fomat
 	new_privoxy_conffile=$true
 fi;
@@ -65,7 +66,7 @@ do_modify_privoxy_file(){
 	echo "actionsfile trafficanalyzer.action" >> $privoxy_content_added_file
 
 	#Because new config file format does user underscore instead of -, you have decide between the formats here
-	if [$new_privoxy_conffile]; then
+	if [ $new_privoxy_conffile ]; then
 		echo "listen_address $nwip:$privoxy_port" >> $privoxy_content_added_file
 		echo "enable_remote_http_toggle  0" >> $privoxy_content_added_file
 		echo "enable_edit_actions 0" >> $privoxy_content_added_file
@@ -105,15 +106,14 @@ modify_privoxy_file(){
 	nwname=$2
 	nwip=$3
 	subnet=$(echo $nwip | sed 's|\([0-9]*\.[0-9]*\.[0-9]*\)\.[0-9]*|\1.0\/24|')
-
+	
 	#defines strings which have to be at the beginning of a line which has to be commented out
 	commentoutstrings="filterfile actionsfile"
-	
 	#Because new config file format does user underscore instead of -, you have decide between the formats here
-	if [$new_privoxy_conffile]; then
-		commentoutstrings= "$commentoutstrings listen_address enable_remote-http_toggle enable_edit_actions accept_intercepted_requests permit_access"
+	if [ $new_privoxy_conffile ]; then
+		commentoutstrings=$(echo "$commentoutstrings listen_address enable_remote-http_toggle enable_edit_actions accept_intercepted_requests permit_access")
 	else
-		commentoutstrings= "$commentoutstrings listen-address enable-remote-http-toggle enable-edit-actions accept-intercepted-requests permit-access"
+		commentoutstrings=$(echo "$commentoutstrings listen-address enable-remote-http-toggle enable-edit-actions accept-intercepted-requests permit-access")
 	fi;
 	if [ $do_undo = "do" ]; then	
 		do_modify_privoxy_file $nwip $subnet "$commentoutstrings";
@@ -129,7 +129,7 @@ add_firewall_rules() {
 	nwip=$2
 	zoneid=$(uci show firewall |grep network=$nwname | sed 's|\.network='$nwname'|   |')
 	zonename=$(uci show $zoneid| grep name | sed -r 's|.*\.name=(.*)|\1|')
-    uci set firewall.privoxy_transparent_http_proxy_autogen=redirect
+    uci add firewall redirect
 	uci set firewall.@redirect[-1].name='privoxy_transparent_http_proxy_autogen'
 	uci set firewall.@redirect[-1].proto='tcp'
 	uci set firewall.@redirect[-1].target='DNAT'
@@ -140,7 +140,6 @@ add_firewall_rules() {
 	#Uncomment next line, if you want, that http traffic to the router will not be redirected to privoxy	
 	#uci set firewall.@redirect[-1].src_dip='!'$nwip
 	uci set firewall.@redirect[-1].dest_port=$privoxy_port
-	uci save firewall
 	uci commit firewall
 	uci commit network
 	echo "firewall rules added..."
@@ -251,3 +250,4 @@ case "$1" in
         exit 3
         ;;
 esac
+
